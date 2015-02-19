@@ -278,7 +278,7 @@ namespace ForeverMundo
             var RLife = _menu.Item("forever.mundo.harrass.life").GetValue<Slider>().Value;
             var LPercentR = Player.Health * 100 / Player.MaxHealth;
 
-            if (qTarget != null && _menu.Item("forever.mundo.harrass.auto").GetValue<bool>() && Q.IsReady() && Player.Distance(qTarget) <= qRange)
+            if (qTarget != null && _menu.Item("forever.mundo.harrass.auto").GetValue<KeyBind>().Active && Q.IsReady() && Player.Distance(qTarget) <= qRange)
             {
                 PredictionOutput qPred = Q.GetPrediction(qTarget);
                 if (qPred.Hitchance >= HitChance.High)
@@ -322,7 +322,10 @@ namespace ForeverMundo
             {
                 E.Cast();
             }
-            if (_menu.Item("forever.mundo.combo.user").GetValue<bool>() && R.IsReady() && Player.HealthPercentage <= 40%));
+            if (_menu.Item("forever.mundo.combo.user").GetValue<bool>() && R.IsReady() && Player.Health < 400);
+            {
+                R.Cast();
+            }
         }
     }
 }
