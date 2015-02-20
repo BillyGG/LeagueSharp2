@@ -293,7 +293,14 @@ namespace ForeverMundo
 
         private static void Harass()
         {
-            throw new NotImplementedException();
+            var target = TargetSelector.GetTarget(Q.Range + 200, TargetSelector.DamageType.Magical);
+            var q = paramBool("forever.mundo.harrass.useq");
+            var e = paramBool("forever.mundo.harrass.usee");
+
+            if (q && Q.IsReady() && target.IsValidTarget(Q.Range) && q)
+                Q.Cast(target);
+            if (e && E.IsReady() && target.IsValidTarget(E.Range) && e)
+                E.Cast();
         }
 
         private static void Drawing_OnDraw(EventArgs args)
@@ -331,6 +338,11 @@ namespace ForeverMundo
             {
                 R.Cast();
             }
+        }
+
+        public static bool paramBool(String paramName)
+        {
+            return _menu.Item(paramName).GetValue<bool>();
         }
     }
 }
