@@ -1,0 +1,4 @@
+C:\Users\Billy\Documents\Visual Studio 2013\Projects\ForeverTeemo\ForeverTeemo\bin\Debug\Forever Teemo.exe.config
+C:\Users\Billy\Documents\GitHub\LeagueSharp\ForeverTeemo\ForeverTeemo\bin\Debug\Forever Teemo.exe.config
+C:\Users\Billy\Documents\GitHub\LeagueSharp\ForeverTeemo\ForeverTeemo\bin\Release\Forever Teemo.exe.config
+C:\Users\Billy\Documents\GitHub\LeagueSharp\ForeverTeemo\ForeverTeemo\obj\Debug\ForeverTeemo.csprojResolveAssemblyReference.cache

@@ -39,7 +39,7 @@ namespace ForeverMundo
         {
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
         }
-                
+
         static void Game_OnGameLoad(EventArgs args)
         {
             Player = ObjectManager.Player;
@@ -84,8 +84,9 @@ namespace ForeverMundo
             {
                 harrassMenu.AddItem(new MenuItem("forever.mundo.harrass.useq", "Use Q").SetValue(true));
                 harrassMenu.AddItem(new MenuItem("forever.mundo.harrass.useE", "Use E").SetValue(true));
-                harrassMenu.AddItem(new MenuItem("forever.mundo.harrass.auto", "Auto Harrass Q?").SetValue<KeyBind>(new KeyBind('T', KeyBindType.Toggle)));
+                harrassMenu.AddItem(new MenuItem("forever.mundo.harrass.auto", "Auto Harrass Q?").SetValue<KeyBind>(new KeyBind("T".ToCharArray()[0], KeyBindType.Toggle)));
                 harrassMenu.AddItem(new MenuItem("forever.mundo.harrass.life", "Don't Harrass If < HP%").SetValue(new Slider(60, 100, 0)));
+                harrassMenu.AddItem(new MenuItem("forever.mundo.harrass.active", "Harass Active").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
             }
             _menu.AddSubMenu(harrassMenu);
 
@@ -105,6 +106,7 @@ namespace ForeverMundo
                 jungleMenu.AddItem(new MenuItem("forever.mundo.jungle.useq", "Use Q").SetValue(true));
                 jungleMenu.AddItem(new MenuItem("forever.mundo.jungle.usew", "Use W").SetValue(true));
                 jungleMenu.AddItem(new MenuItem("forever.mundo.jungle.useq", "Use Q").SetValue(true));
+                jungleMenu.AddItem(new MenuItem("forever.mundo.jungle.active", "Jungle Active").SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
             }
             _menu.AddSubMenu(jungleMenu);
 
@@ -164,13 +166,15 @@ namespace ForeverMundo
             }
             else
             {
-                if (Config.Item("HarassActive").GetValue<KeyBind>().Active)
+                if (_menu.Item("forever.mundo.harass.active").GetValue<KeyBind>().Active)
+                {
                     Harass();
-
-                if (Config.Item("harassToggle").GetValue<KeyBind>().Active)
+                }
+                if (_menu.Item("forever.mundo.harass.auto").GetValue<KeyBind>().Active)
+                {
                     ToggleHarass();
-
-                if (Config.Item("FreezeActive").GetValue<KeyBind>().Active)
+                }
+                if (_menu.Item("forever.mundo.farm.freeze").GetValue<KeyBind>().Active)
                 {
                     FreezeFarm();
                 }
@@ -178,9 +182,10 @@ namespace ForeverMundo
                 {
                     LaneClear();
                 }
-
-                if (Config.Item("JungleFarmActive").GetValue<KeyBind>().Active)
+                if (_menu.Item("forever.mundo.jungle.active").GetValue<KeyBind>().Active)
+                {
                     JungleFarm();
+                }
             }
 
             if (Config.Item("lifesave").GetValue<bool>())
@@ -278,7 +283,7 @@ namespace ForeverMundo
             var RLife = _menu.Item("forever.mundo.harrass.life").GetValue<Slider>().Value;
             var LPercentR = Player.Health * 100 / Player.MaxHealth;
 
-            if (qTarget != null && _menu.Item("forever.mundo.harrass.auto").GetValue<KeyBind>().Active && Q.IsReady() && Player.Distance(qTarget) <= qRange)
+            if (qTarget != null && _menu.Item("forever.mundo.harrass.auto").GetValue<KeyBind>().Active && Q.IsReady() && Player.Distance(qTarget.Position) <= qRange)
             {
                 PredictionOutput qPred = Q.GetPrediction(qTarget);
                 if (qPred.Hitchance >= HitChance.High)
@@ -308,21 +313,21 @@ namespace ForeverMundo
 
             var wHealth = _menu.Item("forever.mundo.combo.usewat").GetValue<Slider>().Value;
 
-            if (qTarget != null && _menu.Item("forever.mundo.combo.useq").GetValue<bool>() && Q.IsReady() && Player.Distance(qTarget) <= qRange)
+            if (qTarget != null && _menu.Item("forever.mundo.combo.useq").GetValue<bool>() && Q.IsReady() && Player.Distance(qTarget.Position) <= qRange)
             {
                 PredictionOutput qPred = Q.GetPrediction(qTarget);
                 if (qPred.Hitchance >= HitChance.High)
                     Q.Cast(qPred.CastPosition);
             }
-            if (!WActive && qTarget != null && _menu.Item("forever.mundo.combo.usew").GetValue<bool>() && W.IsReady() && Player.Distance(qTarget) <= 300)
+            if (!WActive && qTarget != null && _menu.Item("forever.mundo.combo.usew").GetValue<bool>() && W.IsReady() && Player.Distance(qTarget.Position) <= 300)
             {
                 W.Cast();
             }
-            if (_menu.Item("UseECombo").GetValue<bool>() && E.IsReady() && Player.Distance(qTarget) <= 300)
+            if (_menu.Item("forever.mundo.combo.usee").GetValue<bool>() && E.IsReady() && Player.Distance(qTarget.Position) <= 300)
             {
                 E.Cast();
             }
-            if (_menu.Item("forever.mundo.combo.user").GetValue<bool>() && R.IsReady() && Player.Health < 400);
+            if (_menu.Item("forever.mundo.combo.user").GetValue<bool>() && R.IsReady() && Player.Health <= 400);
             {
                 R.Cast();
             }
