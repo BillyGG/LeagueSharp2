@@ -43,12 +43,10 @@ namespace ForeverRyze
             #endregion
 
             #region Abilities and Summoners
-            Q = new Spell(SpellSlot.Q, 625f, TargetSelector.DamageType.Magical);
-            W = new Spell(SpellSlot.W, 600f, TargetSelector.DamageType.Magical);
-            E = new Spell(SpellSlot.E, 600f, TargetSelector.DamageType.Magical);
+            Q = new Spell(SpellSlot.Q, 625, TargetSelector.DamageType.Magical);
+            W = new Spell(SpellSlot.W, 600, TargetSelector.DamageType.Magical);
+            E = new Spell(SpellSlot.E, 600, TargetSelector.DamageType.Magical);
             R = new Spell(SpellSlot.R);
-
-            SpellList.AddRange(new[] { Q, W, E, R });
 
             IgniteSlot = Player.GetSpellSlot("SummonerDot"); 
             #endregion
@@ -75,7 +73,6 @@ namespace ForeverRyze
                 comboMenu.AddItem(new MenuItem("forever.ryze.combo.usee", "Combo - E").SetValue(true));
                 comboMenu.AddItem(new MenuItem("forever.ryze.combo.user", "Combo - R").SetValue(true));
                 comboMenu.AddItem(new MenuItem("forever.ryze.combo.userhp", "Use Ult Below % HP").SetValue(new Slider(60, 1, 100)));
-                comboMenu.AddItem(new MenuItem("forever.ryze.combo.active", "Combo - Active").SetValue(new KeyBind(32, KeyBindType.Press)));
             }
             _menu.AddSubMenu(comboMenu);
             #endregion ComboMenu
@@ -87,7 +84,6 @@ namespace ForeverRyze
                 harassMenu.AddItem(new MenuItem("forever.ryze.harass.usew", "Harass - W").SetValue(true));
                 harassMenu.AddItem(new MenuItem("forever.ryze.harass.usee", "Harass - E").SetValue(true));
                 harassMenu.AddItem(new MenuItem("forever.ryze.harass.mana", "Harass - Min Mana %").SetValue(new Slider(50, 0, 100)));
-                harassMenu.AddItem(new MenuItem("forever.ryze.harass.active", "Harass - Active").SetValue(new KeyBind("C".ToCharArray()[0], KeyBindType.Press)));
             }
             _menu.AddSubMenu(harassMenu);
             #endregion HarassMenu
@@ -97,7 +93,6 @@ namespace ForeverRyze
                 farmMenu.AddItem(new MenuItem("forever.ryze.farm.useq", "Farm - Q").SetValue(true));
                 farmMenu.AddItem(new MenuItem("forever.ryze.farm.usee", "Farm - E").SetValue(true));
                 farmMenu.AddItem(new MenuItem("forever.ryze.farm.mana", "Farm - Min Mana %").SetValue(new Slider(50, 0, 100)));
-                farmMenu.AddItem(new MenuItem("forever.ryze.farm.active", "Farm - Active").SetValue(new KeyBind("V".ToCharArray()[0], KeyBindType.Press)));
             }
             _menu.AddSubMenu(farmMenu);
             #endregion FarmMenu
@@ -135,32 +130,33 @@ namespace ForeverRyze
             if (Player.IsDead)
                 return;
             
-            if (_menu.Item("forever.ryze.combo.active").GetValue<KeyBind>().Active)
+            if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 Overload();
                 RunePrison();
                 SpellFlux();
                 DespPower();
-            }
-            else
+            }          
             {
-                if (_menu.Item("forever.ryze.harass.active").GetValue<KeyBind>().Active)
-                {
-                    Overload();
-                    RunePrison();
-                    SpellFlux();
-                }
-                if (_menu.Item("forever.ryze.harass.auto").GetValue<KeyBind>().Active)
-                {
-                    OverloadAutoHarass();
-                }
-                if (_menu.Item("forever.ryze.farm.active").GetValue<KeyBind>().Active)
-                {
-                    Overload();
-                    SpellFlux();
-                }
+            if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
+            {
+                Overload();
+                RunePrison();
+                SpellFlux();
+            }
+
+            if (_menu.Item("forever.ryze.harass.auto").GetValue<KeyBind>().Active)
+            {
+                OverloadAutoHarass();
+            }
+
+            if (_orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
+            {
+                Overload();
+                SpellFlux();
             }
         }
+   }
 
         private static void OverloadAutoHarass()
         {
